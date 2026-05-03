@@ -477,65 +477,55 @@
   <!-- Motion One -->
   <script type="module">
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const allMotion = document.querySelectorAll('[data-motion]');
+    const revealAll = () => allMotion.forEach(el => el.setAttribute('data-motion-ready', ''));
 
     if (reduce) {
-      document.querySelectorAll('[data-motion]').forEach(el => el.setAttribute('data-motion-ready', ''));
+      revealAll();
     } else {
-      const { animate, inView, stagger } = await import('https://cdn.jsdelivr.net/npm/motion@12.4.1/+esm');
+      // Safety net: if Motion One fails to load (slow network, blocked CDN, etc.),
+      // reveal everything after 1.5s so content is never invisible.
+      const safetyTimer = setTimeout(revealAll, 1500);
 
-      const heroEls = document.querySelectorAll('[data-motion="hero"]');
-      heroEls.forEach(el => el.style.transform = 'translateY(24px)');
-      animate(
-        heroEls,
-        { opacity: [0, 1], transform: ['translateY(24px)', 'translateY(0px)'] },
-        { type: 'spring', bounce: 0.18, duration: 0.7, delay: stagger(0.08) }
-      );
+      try {
+        const { animate, inView } = await import('https://cdn.jsdelivr.net/npm/motion@12.4.1/+esm');
+        clearTimeout(safetyTimer);
 
-      inView('[data-motion="fade"]', (el) => {
-        el.style.transform = 'translateY(20px)';
-        animate(
-          el,
-          { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0px)'] },
-          { type: 'spring', bounce: 0.12, duration: 0.55 }
-        );
-      }, { margin: '0px 0px -80px 0px' });
-
-      inView('#about', () => {
-        const pillars = document.querySelectorAll('[data-motion="pillar"]');
-        pillars.forEach(el => el.style.transform = 'translateY(24px)');
-        animate(
-          pillars,
-          { opacity: [0, 1], transform: ['translateY(24px)', 'translateY(0px)'] },
-          { type: 'spring', bounce: 0.18, duration: 0.6, delay: stagger(0.1) }
-        );
-      }, { amount: 0.3 });
-
-      inView('#cuts', () => {
-        const cards = document.querySelectorAll('[data-motion="cut"]');
-        cards.forEach(el => el.style.transform = 'translateY(20px)');
-        animate(
-          cards,
-          { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0px)'] },
-          { type: 'spring', bounce: 0.2, duration: 0.5, delay: stagger(0.06) }
-        );
-      }, { amount: 0.15 });
-
-      inView('#atmo', () => {
-        const tiles = document.querySelectorAll('[data-motion="gallery"]');
-        tiles.forEach(el => el.style.transform = 'translateY(16px)');
-        animate(
-          tiles,
-          { opacity: [0, 1], transform: ['translateY(16px)', 'translateY(0px)'] },
-          { type: 'spring', bounce: 0.15, duration: 0.45, delay: stagger(0.05) }
-        );
-      }, { amount: 0.15 });
-
-      const canHover = window.matchMedia('(hover: hover)').matches;
-      if (canHover) {
-        document.querySelectorAll('[data-hover-scale]').forEach(el => {
-          el.addEventListener('pointerenter', () => animate(el, { transform: 'scale(1.02)' }, { type: 'spring', bounce: 0.3, duration: 0.3 }));
-          el.addEventListener('pointerleave', () => animate(el, { transform: 'scale(1)' }, { duration: 0.2, ease: 'easeOut' }));
+        // Hero — runs immediately on load with manual stagger
+        const heroEls = document.querySelectorAll('[data-motion="hero"]');
+        heroEls.forEach((el, i) => {
+          el.style.transform = 'translateY(24px)';
+          animate(
+            el,
+            { opacity: [0, 1], transform: ['translateY(24px)', 'translateY(0px)'] },
+            { type: 'spring', bounce: 0.18, duration: 0.7, delay: i * 0.08 }
+          );
         });
+
+        // Everything else — per-element trigger as it scrolls into view.
+        // No section-level `amount` thresholds (they break on tall sections / small viewports).
+        inView('[data-motion]:not([data-motion="hero"])', (el) => {
+          if (el.dataset.motionDone === '1') return;
+          el.dataset.motionDone = '1';
+          el.style.transform = 'translateY(20px)';
+          animate(
+            el,
+            { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0px)'] },
+            { type: 'spring', bounce: 0.15, duration: 0.55 }
+          );
+        }, { margin: '0px 0px -80px 0px' });
+
+        // Hover scale — pointer devices only
+        const canHover = window.matchMedia('(hover: hover)').matches;
+        if (canHover) {
+          document.querySelectorAll('[data-hover-scale]').forEach(el => {
+            el.addEventListener('pointerenter', () => animate(el, { transform: 'scale(1.02)' }, { type: 'spring', bounce: 0.3, duration: 0.3 }));
+            el.addEventListener('pointerleave', () => animate(el, { transform: 'scale(1)' }, { duration: 0.2, ease: 'easeOut' }));
+          });
+        }
+      } catch (e) {
+        // Motion One import failed — safetyTimer already revealed everything.
+        console.warn('Motion One failed to load:', e);
       }
     }
   </script>

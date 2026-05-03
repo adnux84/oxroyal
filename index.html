@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F0F0F" />
+  <title>OX Royal — Steakhaus am Rhein, Köln</title>
+  <meta name="description" content="Premium-Steakhaus am Rhein in Köln-Rodenkirchen. Cuts aus aller Welt, trockengereift im Haus. Mo–Sa ab 17:30." />
+  <meta property="og:title" content="OX Royal — Ein Tisch am Rhein" />
+  <meta property="og:description" content="Premium-Steakhaus am Rhein in Köln-Rodenkirchen." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="de_DE" />
+  <meta property="og:image" content="images/hero.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#0F0F0F',
+            bordeaux: '#5C1F2C',
+            champagne: '#C9A961',
+            bone: '#F5F1E8',
+            slate: '#2C3E50',
+            ember: '#8B2A1F',
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    :root { color-scheme: dark; }
+    body { background-color: #0F0F0F; color: #F5F1E8; }
+
+    .skip-link {
+      position: absolute; top: -100px; left: 16px; z-index: 100;
+      background: #C9A961; color: #0F0F0F; padding: 12px 20px;
+      font-size: 14px; text-decoration: none; transition: top .2s ease;
+    }
+    .skip-link:focus { top: 16px; }
+
+    *:focus { outline: none; }
+    *:focus-visible {
+      outline: 2px solid #C9A961;
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .gold-line { background: linear-gradient(90deg, transparent, #C9A961, transparent); height: 1px; }
+
+    [data-motion] { opacity: 0; }
+    [data-motion-ready] { opacity: 1 !important; transform: none !important; }
+
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px;
+      background: #C9A961; transition: width .25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-link:hover::after, .nav-link:focus-visible::after { width: 100%; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .scroll-hint { animation: bounce 2.4s infinite; }
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); opacity: .4; }
+        50% { transform: translateY(8px); opacity: .8; }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-motion] { opacity: 1 !important; transform: none !important; }
+      html { scroll-behavior: auto; }
+    }
+
+    /* Image treatment — subtle premium look */
+    .img-premium { filter: contrast(1.05) saturate(0.95); transition: filter .6s ease; }
+    .cut-spread:hover .img-premium { filter: contrast(1.08) saturate(1) brightness(1.03); }
+
+    /* Cut number — subtle index */
+    .cut-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 1.25rem;
+      letter-spacing: 0.3em;
+      color: #C9A961;
+      opacity: 0.7;
+    }
+
+    /* Editorial frame — thin champagne outline, offset behind image (gallery-hung look) */
+    .cut-frame { position: relative; }
+    .cut-frame > .cut-frame-inner {
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .cut-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(201, 169, 97, 0.45);
+      pointer-events: none;
+      z-index: 0;
+      transition: transform .8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cut-frame.frame-br::after { transform: translate(12px, 12px); }
+    .cut-frame.frame-bl::after { transform: translate(-12px, 12px); }
+    @media (min-width: 768px) {
+      .cut-frame.frame-br::after { transform: translate(24px, 24px); }
+      .cut-frame.frame-bl::after { transform: translate(-24px, 24px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cut-frame::after { transition: none; }
+    }
+  </style>
+</head>
+<body class="font-body antialiased">
+
+  <a href="#main" class="skip-link">Zum Inhalt springen</a>
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full z-50 bg-charcoal/85 backdrop-blur-md border-b border-champagne/10" aria-label="Hauptnavigation">
+    <div class="max-w-7xl mx-auto px-6 h-16 md:h-20 flex items-center justify-between">
+      <a href="#hero" class="font-display text-2xl text-champagne tracking-[0.2em] min-h-[44px] flex items-center" aria-label="OX Royal — Startseite">OX ROYAL</a>
+
+      <div class="hidden md:flex gap-10 text-xs uppercase tracking-[0.25em] text-bone/80">
+        <a href="#about" class="nav-link hover:text-champagne transition-colors duration-200 min-h-[44px] flex items-center">Haus</a>
+        <a href="#cuts" class="nav-link hover:text-champagne transition-colors duration-200 min-h-[44px] flex items-center">Cuts</a>
+        <a href="#atmo" class="nav-link hover:text-champagne transition-colors duration-200 min-h-[44px] flex items-center">Atmosphäre</a>
+        <a href="#kontakt" class="nav-link hover:text-champagne transition-colors duration-200 min-h-[44px] flex items-center">Kontakt</a>
+      </div>
+
+      <a href="#reservierung" class="hidden md:inline-flex items-center justify-center border border-champagne text-champagne px-5 min-h-[44px] text-xs uppercase tracking-[0.25em] hover:bg-champagne hover:text-charcoal transition-colors duration-200">Reservieren</a>
+
+      <button id="menuBtn" class="md:hidden text-champagne min-h-[44px] min-w-[44px] flex items-center justify-center text-2xl" aria-label="Menü öffnen" aria-expanded="false" aria-controls="mobileMenu">☰</button>
+    </div>
+
+    <div id="mobileMenu" class="md:hidden hidden bg-charcoal border-t border-champagne/10">
+      <div class="flex flex-col px-6 py-4 text-sm uppercase tracking-[0.25em]">
+        <a href="#about" class="hover:text-champagne min-h-[48px] flex items-center">Haus</a>
+        <a href="#cuts" class="hover:text-champagne min-h-[48px] flex items-center">Cuts</a>
+        <a href="#atmo" class="hover:text-champagne min-h-[48px] flex items-center">Atmosphäre</a>
+        <a href="#kontakt" class="hover:text-champagne min-h-[48px] flex items-center">Kontakt</a>
+        <a href="#reservierung" class="text-champagne min-h-[48px] flex items-center">Reservieren</a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+
+    <!-- Hero -->
+    <section id="hero" class="min-h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <img src="images/hero.jpg" alt="" class="w-full h-full object-cover img-premium" fetchpriority="high" />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-b from-charcoal/70 via-charcoal/55 to-charcoal z-0"></div>
+
+      <div class="relative z-10 max-w-3xl">
+        <div data-motion="hero" class="text-champagne text-[10px] uppercase tracking-[0.4em] mb-8">Premium Steakhouse · Köln-Rodenkirchen</div>
+        <h1 data-motion="hero" class="font-display text-7xl md:text-[10rem] text-bone leading-[0.95] mb-10 tracking-tight">OX Royal</h1>
+        <div data-motion="hero" class="gold-line w-32 mx-auto mb-10"></div>
+        <p data-motion="hero" class="font-display italic text-2xl md:text-4xl text-bone/95 mb-14">Ein Tisch am Rhein.</p>
+        <a href="#reservierung" data-motion="hero" data-hover-scale class="inline-flex items-center justify-center bg-champagne text-charcoal px-10 min-h-[52px] text-xs uppercase tracking-[0.3em] hover:bg-champagne/90 transition-colors duration-200 font-medium">
+          Tisch reservieren
+        </a>
+        <div data-motion="hero" class="mt-20 text-bone/70 text-[11px] uppercase tracking-[0.3em]">
+          Mo – Sa · ab 17:30 · Sonntag geschlossen
+        </div>
+      </div>
+
+      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-champagne/60 text-xs scroll-hint" aria-hidden="true">↓</div>
+    </section>
+
+    <!-- Haus -->
+    <section id="about" class="py-32 md:py-40 px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-24">
+          <div data-motion="fade" class="text-champagne text-[10px] uppercase tracking-[0.4em] mb-5">Das Haus</div>
+          <h2 data-motion="fade" class="font-display text-5xl md:text-7xl text-bone mb-6">Familie. Rhein. Handwerk.</h2>
+          <p data-motion="fade" class="max-w-2xl mx-auto text-bone/80 leading-relaxed text-lg font-light">
+            Kein Konzept-Restaurant. Kein Filial-Steakhouse. Ein Familienbetrieb, der seit Jahren denselben Anspruch trägt: das beste Stück Fleisch in Köln, an einem der schönsten Plätze der Stadt.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-12 md:gap-16">
+          <div data-motion="pillar" class="text-center">
+            <div class="font-display text-7xl text-champagne/80 mb-8" aria-hidden="true">I</div>
+            <h3 class="font-display text-2xl text-bone mb-5">Cuts aus aller Welt</h3>
+            <p class="text-bone/75 leading-relaxed font-light">Handverlesen aus Nebraska, Galicien, Argentinien. Trockengereift im hauseigenen Schrank über Wochen. Was hier auf den Teller kommt, würden wir selbst essen.</p>
+          </div>
+          <div data-motion="pillar" class="text-center">
+            <div class="font-display text-7xl text-champagne/80 mb-8" aria-hidden="true">II</div>
+            <h3 class="font-display text-2xl text-bone mb-5">Direkt am Wasser</h3>
+            <p class="text-bone/75 leading-relaxed font-light">Goldene Stunde inklusive. Der Tisch, an dem Köln zusammenkommt — Geschäftsabend, Date-Night, der Anlass, den man nicht vergisst.</p>
+          </div>
+          <div data-motion="pillar" class="text-center">
+            <div class="font-display text-7xl text-champagne/80 mb-8" aria-hidden="true">III</div>
+            <h3 class="font-display text-2xl text-bone mb-5">Vom Haus geführt</h3>
+            <p class="text-bone/75 leading-relaxed font-light">Jeder Cut, jede Sauce, jede Beilage geht durch unsere Hände. Persönlich. Kompromisslos. So, wie wir Gastfreundschaft verstehen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cuts — Editorial Magazine Spread -->
+    <section id="cuts" class="py-32 md:py-48 px-6 bg-gradient-to-b from-charcoal via-bordeaux/5 to-charcoal">
+      <div class="max-w-7xl mx-auto">
+
+        <header class="text-center mb-32 md:mb-48">
+          <div data-motion="fade" class="text-champagne text-[10px] uppercase tracking-[0.4em] mb-5">Aus dem Dry-Age-Schrank</div>
+          <h2 data-motion="fade" class="font-display text-6xl md:text-8xl text-bone">Cuts</h2>
+          <div data-motion="fade" class="gold-line w-32 mx-auto mt-10"></div>
+        </header>
+
+        <div class="space-y-32 md:space-y-56">
+
+          <!-- I — Tomahawk (image left) -->
+          <article class="cut-spread grid md:grid-cols-12 gap-10 md:gap-20 items-center">
+            <div data-motion="cut" class="md:col-span-7 cut-frame frame-br">
+              <div class="cut-frame-inner aspect-[4/5]">
+                <img src="images/steak2.jpg" alt="Tomahawk Steak, tranchiert auf Holzbrett" class="w-full h-full object-cover img-premium" loading="lazy" />
+              </div>
+            </div>
+            <div data-motion="cut" class="md:col-span-5">
+              <div class="cut-number mb-8">I</div>
+              <h3 class="font-display text-6xl md:text-7xl text-bone leading-[0.95] mb-10 tracking-tight">Tomahawk</h3>
+              <p class="text-bone/85 leading-relaxed text-lg font-light max-w-md">Das Statement-Stück. Frenched Bone, intensives Aroma, mindestens 35 Tage trockengereift. Für zwei.</p>
+            </div>
+          </article>
+
+          <!-- II — Chateaubriand (image right) -->
+          <article class="cut-spread grid md:grid-cols-12 gap-10 md:gap-20 items-center">
+            <div data-motion="cut" class="md:col-span-5 md:order-1 md:pl-8 lg:pl-16">
+              <div class="cut-number mb-8">II</div>
+              <h3 class="font-display text-6xl md:text-7xl text-bone leading-[0.95] mb-10 tracking-tight">Chateaubriand</h3>
+              <p class="text-bone/85 leading-relaxed text-lg font-light max-w-md">Filet-Mittelstück. Klassisch zu zweit serviert. Butterzart, rosa Kern, dezent gewürzt.</p>
+            </div>
+            <div data-motion="cut" class="md:col-span-7 md:order-2 cut-frame frame-bl">
+              <div class="cut-frame-inner aspect-[4/5]">
+                <img src="images/speisen.jpg" alt="Filet-Mittelstück, aufgeschnitten" class="w-full h-full object-cover img-premium" loading="lazy" />
+              </div>
+            </div>
+          </article>
+
+          <!-- III — Ribeye (image left) -->
+          <article class="cut-spread grid md:grid-cols-12 gap-10 md:gap-20 items-center">
+            <div data-motion="cut" class="md:col-span-7 cut-frame frame-br">
+              <div class="cut-frame-inner aspect-[4/5]">
+                <img src="images/essen2.jpg" alt="Ribeye mit Bratkartoffeln" class="w-full h-full object-cover img-premium" loading="lazy" />
+              </div>
+            </div>
+            <div data-motion="cut" class="md:col-span-5">
+              <div class="cut-number mb-8">III</div>
+              <h3 class="font-display text-6xl md:text-7xl text-bone leading-[0.95] mb-10 tracking-tight">Ribeye</h3>
+              <p class="text-bone/85 leading-relaxed text-lg font-light max-w-md">Marmorierung, die für sich spricht. Großzügig geschnitten, kompromisslos im Geschmack.</p>
+            </div>
+          </article>
+
+          <!-- IV — Filet (image right) -->
+          <article class="cut-spread grid md:grid-cols-12 gap-10 md:gap-20 items-center">
+            <div data-motion="cut" class="md:col-span-5 md:order-1 md:pl-8 lg:pl-16">
+              <div class="cut-number mb-8">IV</div>
+              <h3 class="font-display text-6xl md:text-7xl text-bone leading-[0.95] mb-10 tracking-tight">Filet</h3>
+              <p class="text-bone/85 leading-relaxed text-lg font-light max-w-md">Das zarteste Stück. Für die, die Reduktion mögen. Pur, mit Salz, mit Pfeffer.</p>
+            </div>
+            <div data-motion="cut" class="md:col-span-7 md:order-2 cut-frame frame-bl">
+              <div class="cut-frame-inner aspect-[4/5]">
+                <img src="images/steak1.jpg" alt="Filet auf Teller" class="w-full h-full object-cover img-premium" loading="lazy" />
+              </div>
+            </div>
+          </article>
+
+          <!-- V — Carpaccio (image left) -->
+          <article class="cut-spread grid md:grid-cols-12 gap-10 md:gap-20 items-center">
+            <div data-motion="cut" class="md:col-span-7 cut-frame frame-br">
+              <div class="cut-frame-inner aspect-[4/5]">
+                <img src="images/essen1.jpg" alt="Carpaccio-Aufnahme" class="w-full h-full object-cover img-premium" loading="lazy" />
+              </div>
+            </div>
+            <div data-motion="cut" class="md:col-span-5">
+              <div class="cut-number mb-8">V</div>
+              <h3 class="font-display text-6xl md:text-7xl text-bone leading-[0.95] mb-10 tracking-tight">Carpaccio</h3>
+              <p class="text-bone/85 leading-relaxed text-lg font-light max-w-md">Galicisches Rind, hauchdünn aufgeschnitten. Trüffel, Olivenöl, Parmesan. Klassik, neu interpretiert.</p>
+            </div>
+          </article>
+
+          <!-- VI — Tatar (image right) -->
+          <article class="cut-spread grid md:grid-cols-12 gap-10 md:gap-20 items-center">
+            <div data-motion="cut" class="md:col-span-5 md:order-1 md:pl-8 lg:pl-16">
+              <div class="cut-number mb-8">VI</div>
+              <h3 class="font-display text-6xl md:text-7xl text-bone leading-[0.95] mb-10 tracking-tight">Tatar</h3>
+              <p class="text-bone/85 leading-relaxed text-lg font-light max-w-md">Frisch geschnitten, klassisch abgeschmeckt. Eine Empfehlung für Puristen.</p>
+            </div>
+            <div data-motion="cut" class="md:col-span-7 md:order-2 cut-frame frame-bl">
+              <div class="cut-frame-inner aspect-[4/5]">
+                <img src="images/essen3.jpg" alt="Tatar-Aufnahme" class="w-full h-full object-cover img-premium" loading="lazy" />
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <div data-motion="fade" class="text-center mt-32 md:mt-48">
+          <div class="gold-line w-32 mx-auto mb-10"></div>
+          <p class="text-bone/75 italic font-display text-xl">Wechselnde Cuts, saisonale Spezialitäten — fragen Sie unser Team.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Atmosphäre -->
+    <section id="atmo" class="py-32 md:py-40 px-6">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-20">
+          <div data-motion="fade" class="text-champagne text-[10px] uppercase tracking-[0.4em] mb-5">Bei uns zu Gast</div>
+          <h2 data-motion="fade" class="font-display text-5xl md:text-7xl text-bone">Atmosphäre</h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div data-motion="gallery" class="aspect-[3/4] overflow-hidden border border-champagne/10">
+            <img src="images/tisch.jpg" alt="Eingedeckte Tafel mit weißer Tischdecke" class="w-full h-full object-cover img-premium" loading="lazy" />
+          </div>
+          <div data-motion="gallery" class="aspect-[3/4] overflow-hidden border border-champagne/10">
+            <img src="images/lokal.jpg" alt="Innenraum mit Blumen-Arrangement" class="w-full h-full object-cover img-premium" loading="lazy" />
+          </div>
+          <div data-motion="gallery" class="aspect-[3/4] overflow-hidden border border-champagne/10">
+            <img src="images/restaurant.jpg" alt="Tisch für besonderen Anlass" class="w-full h-full object-cover img-premium" loading="lazy" />
+          </div>
+          <div data-motion="gallery" class="aspect-[3/4] overflow-hidden border border-champagne/10">
+            <img src="images/lokal2.jpg" alt="Steak in der Pfanne" class="w-full h-full object-cover img-premium" loading="lazy" />
+          </div>
+          <div data-motion="gallery" class="aspect-[3/4] overflow-hidden border border-champagne/10">
+            <img src="images/oxroyal.jpg" alt="Hauptgang mit Beilage" class="w-full h-full object-cover img-premium" loading="lazy" />
+          </div>
+          <div data-motion="gallery" class="aspect-[3/4] overflow-hidden border border-champagne/10">
+            <img src="images/steak3.jpg" alt="Frisches Premium-Fleisch" class="w-full h-full object-cover img-premium" loading="lazy" />
+          </div>
+        </div>
+
+        <div data-motion="fade" class="text-center mt-12">
+          <a href="https://www.instagram.com/ox_royal_/" target="_blank" rel="noopener" class="inline-flex items-center min-h-[44px] text-champagne text-xs uppercase tracking-[0.3em] border-b border-champagne/30 pb-1 hover:border-champagne transition-colors duration-200">
+            Mehr auf Instagram →
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reservierung -->
+    <section id="reservierung" class="py-32 md:py-40 px-6 relative overflow-hidden">
+      <div class="absolute inset-0 z-0">
+        <img src="images/lokal.jpg" alt="" class="w-full h-full object-cover img-premium" loading="lazy" />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-b from-charcoal/90 via-charcoal/85 to-charcoal z-0"></div>
+
+      <div class="relative z-10 max-w-3xl mx-auto text-center">
+        <div data-motion="fade" class="text-champagne text-[10px] uppercase tracking-[0.4em] mb-5">Reservierung</div>
+        <h2 data-motion="fade" class="font-display text-5xl md:text-7xl text-bone mb-10">Tisch reservieren.</h2>
+        <p data-motion="fade" class="text-bone/85 mb-14 leading-relaxed text-lg font-light">
+          Wir freuen uns über Ihre Reservierung. Telefonisch oder per E-Mail. Für besondere Anlässe und Gruppen ab 6 Personen sprechen Sie uns gerne direkt an.
+        </p>
+
+        <div data-motion="fade" class="flex flex-col md:flex-row gap-4 justify-center">
+          <a href="tel:022137984606" class="inline-flex items-center justify-center bg-champagne text-charcoal px-10 min-h-[52px] text-xs uppercase tracking-[0.3em] hover:bg-champagne/90 transition-colors duration-200 font-medium">
+            0221 37984606
+          </a>
+          <a href="mailto:reservierung@steakhaus-ox-royal-koeln.de" class="inline-flex items-center justify-center border border-champagne text-champagne px-10 min-h-[52px] text-xs uppercase tracking-[0.3em] hover:bg-champagne hover:text-charcoal transition-colors duration-200">
+            Per E-Mail anfragen
+          </a>
+        </div>
+
+        <div data-motion="fade" class="mt-20 text-bone/70 text-xs uppercase tracking-[0.3em]">
+          Mo – Sa · 17:30 – 23:00 · Sonntag geschlossen
+        </div>
+      </div>
+    </section>
+
+    <!-- Kontakt -->
+    <section id="kontakt" class="py-32 md:py-40 px-6">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-20">
+          <div data-motion="fade" class="text-champagne text-[10px] uppercase tracking-[0.4em] mb-5">So finden Sie uns</div>
+          <h2 data-motion="fade" class="font-display text-5xl md:text-7xl text-bone">Kontakt & Anfahrt</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-16">
+          <div data-motion="fade">
+            <div class="space-y-10">
+              <div>
+                <div class="text-champagne text-[10px] uppercase tracking-[0.3em] mb-3">Adresse</div>
+                <div class="font-display text-2xl text-bone">Uferstraße 16</div>
+                <div class="text-bone/85 mt-1">50996 Köln-Rodenkirchen</div>
+              </div>
+              <div>
+                <div class="text-champagne text-[10px] uppercase tracking-[0.3em] mb-3">Telefon</div>
+                <a href="tel:022137984606" class="inline-flex items-center min-h-[44px] font-display text-2xl text-bone hover:text-champagne transition-colors duration-200">0221 37984606</a>
+              </div>
+              <div>
+                <div class="text-champagne text-[10px] uppercase tracking-[0.3em] mb-3">E-Mail</div>
+                <a href="mailto:info@steakhaus-ox-royal-koeln.de" class="inline-flex items-center min-h-[44px] font-display text-xl text-bone hover:text-champagne transition-colors duration-200 break-all">info@steakhaus-ox-royal-koeln.de</a>
+              </div>
+              <div>
+                <div class="text-champagne text-[10px] uppercase tracking-[0.3em] mb-3">Öffnungszeiten</div>
+                <div class="text-bone">Montag – Samstag · 17:30 – 23:00 Uhr</div>
+                <div class="text-bone/70 mt-1">Sonntag geschlossen</div>
+              </div>
+            </div>
+          </div>
+
+          <div data-motion="fade">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2510.8932108657996!2d6.9869!3d50.8895!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNTDCsDUzJzIyLjIiTiA2wrA1OScxMy4wIkU!5e0!3m2!1sde!2sde!4v1714600000000"
+              width="100%"
+              height="400"
+              style="border:0; filter: grayscale(1) invert(0.92) contrast(0.85);"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              class="border border-champagne/20"
+              title="OX Royal auf Google Maps"></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-champagne/10 py-16 px-6">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-10">
+        <div class="font-display text-2xl text-champagne tracking-[0.2em]">OX ROYAL</div>
+        <div class="flex gap-6 text-bone/80 text-[11px] uppercase tracking-[0.3em]">
+          <a href="https://www.instagram.com/ox_royal_/" target="_blank" rel="noopener" class="inline-flex items-center min-h-[44px] hover:text-champagne transition-colors duration-200">Instagram</a>
+          <a href="#" class="inline-flex items-center min-h-[44px] hover:text-champagne transition-colors duration-200">TikTok</a>
+        </div>
+        <div class="flex gap-6 text-bone/70 text-[11px] uppercase tracking-[0.3em]">
+          <a href="#" class="inline-flex items-center min-h-[44px] hover:text-champagne transition-colors duration-200">Impressum</a>
+          <a href="#" class="inline-flex items-center min-h-[44px] hover:text-champagne transition-colors duration-200">Datenschutz</a>
+        </div>
+      </div>
+      <div class="text-center text-bone/60 text-[11px] uppercase tracking-[0.3em] mt-12">
+        © 2026 OX Royal · Steakhaus am Rhein
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mobile menu -->
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    menuBtn.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('hidden') === false;
+      menuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      menuBtn.textContent = isOpen ? '✕' : '☰';
+      menuBtn.setAttribute('aria-label', isOpen ? 'Menü schließen' : 'Menü öffnen');
+    });
+    mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.textContent = '☰';
+      menuBtn.setAttribute('aria-label', 'Menü öffnen');
+    }));
+  </script>
+
+  <!-- Motion One -->
+  <script type="module">
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduce) {
+      document.querySelectorAll('[data-motion]').forEach(el => el.setAttribute('data-motion-ready', ''));
+    } else {
+      const { animate, inView, stagger } = await import('https://cdn.jsdelivr.net/npm/motion@12.4.1/+esm');
+
+      const heroEls = document.querySelectorAll('[data-motion="hero"]');
+      heroEls.forEach(el => el.style.transform = 'translateY(24px)');
+      animate(
+        heroEls,
+        { opacity: [0, 1], transform: ['translateY(24px)', 'translateY(0px)'] },
+        { type: 'spring', bounce: 0.18, duration: 0.7, delay: stagger(0.08) }
+      );
+
+      inView('[data-motion="fade"]', (el) => {
+        el.style.transform = 'translateY(20px)';
+        animate(
+          el,
+          { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0px)'] },
+          { type: 'spring', bounce: 0.12, duration: 0.55 }
+        );
+      }, { margin: '0px 0px -80px 0px' });
+
+      inView('#about', () => {
+        const pillars = document.querySelectorAll('[data-motion="pillar"]');
+        pillars.forEach(el => el.style.transform = 'translateY(24px)');
+        animate(
+          pillars,
+          { opacity: [0, 1], transform: ['translateY(24px)', 'translateY(0px)'] },
+          { type: 'spring', bounce: 0.18, duration: 0.6, delay: stagger(0.1) }
+        );
+      }, { amount: 0.3 });
+
+      inView('#cuts', () => {
+        const cards = document.querySelectorAll('[data-motion="cut"]');
+        cards.forEach(el => el.style.transform = 'translateY(20px)');
+        animate(
+          cards,
+          { opacity: [0, 1], transform: ['translateY(20px)', 'translateY(0px)'] },
+          { type: 'spring', bounce: 0.2, duration: 0.5, delay: stagger(0.06) }
+        );
+      }, { amount: 0.15 });
+
+      inView('#atmo', () => {
+        const tiles = document.querySelectorAll('[data-motion="gallery"]');
+        tiles.forEach(el => el.style.transform = 'translateY(16px)');
+        animate(
+          tiles,
+          { opacity: [0, 1], transform: ['translateY(16px)', 'translateY(0px)'] },
+          { type: 'spring', bounce: 0.15, duration: 0.45, delay: stagger(0.05) }
+        );
+      }, { amount: 0.15 });
+
+      const canHover = window.matchMedia('(hover: hover)').matches;
+      if (canHover) {
+        document.querySelectorAll('[data-hover-scale]').forEach(el => {
+          el.addEventListener('pointerenter', () => animate(el, { transform: 'scale(1.02)' }, { type: 'spring', bounce: 0.3, duration: 0.3 }));
+          el.addEventListener('pointerleave', () => animate(el, { transform: 'scale(1)' }, { duration: 0.2, ease: 'easeOut' }));
+        });
+      }
+    }
+  </script>
+</body>
+</html>

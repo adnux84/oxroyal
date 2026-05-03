@@ -12,6 +12,48 @@
   <meta property="og:locale" content="de_DE" />
   <meta property="og:image" content="images/hero.jpg" />
 
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- Schema.org Restaurant — surfaces hours, phone, address directly in Google search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "OX Royal",
+    "image": "https://adnux84.github.io/oxroyal/images/hero.jpg",
+    "@id": "https://adnux84.github.io/oxroyal/",
+    "url": "https://adnux84.github.io/oxroyal/",
+    "telephone": "+49-221-37984606",
+    "priceRange": "€€€€",
+    "servesCuisine": ["Steakhouse", "International"],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Uferstraße 16",
+      "addressLocality": "Köln",
+      "postalCode": "50996",
+      "addressRegion": "NRW",
+      "addressCountry": "DE"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 50.8895,
+      "longitude": 6.9869
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+        "opens": "17:30",
+        "closes": "23:00"
+      }
+    ],
+    "acceptsReservations": "True",
+    "sameAs": [
+      "https://www.instagram.com/ox_royal_/"
+    ]
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -97,6 +139,23 @@
       opacity: 0.7;
     }
 
+    /* Live status dot — pulses when restaurant is open */
+    .status-dot.is-open {
+      background: #C9A961;
+      box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.6);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .status-dot.is-open { animation: pulse-dot 2.4s ease-out infinite; }
+      @keyframes pulse-dot {
+        0% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0.55); }
+        70% { box-shadow: 0 0 0 10px rgba(201, 169, 97, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(201, 169, 97, 0); }
+      }
+    }
+
+    /* Sticky mobile reservation visibility */
+    #stickyReserve.is-visible { opacity: 1; pointer-events: auto; }
+
     /* Editorial frame — thin champagne outline, offset behind image (gallery-hung look) */
     .cut-frame { position: relative; }
     .cut-frame > .cut-frame-inner {
@@ -127,6 +186,14 @@
 <body class="font-body antialiased">
 
   <a href="#main" class="skip-link">Zum Inhalt springen</a>
+
+  <!-- Scroll progress bar -->
+  <div id="scrollProgress" class="fixed top-0 left-0 right-0 h-px bg-champagne origin-left z-[60] pointer-events-none" style="transform: scaleX(0)" aria-hidden="true"></div>
+
+  <!-- Sticky mobile reservation CTA -->
+  <a href="#reservierung" id="stickyReserve" class="md:hidden fixed bottom-4 left-4 right-4 z-50 bg-champagne text-charcoal py-4 text-xs uppercase tracking-[0.3em] font-medium text-center opacity-0 pointer-events-none transition-opacity duration-300" aria-label="Tisch reservieren">
+    Tisch reservieren
+  </a>
 
   <!-- Navigation -->
   <nav class="fixed top-0 w-full z-50 bg-charcoal/85 backdrop-blur-md border-b border-champagne/10" aria-label="Hauptnavigation">
@@ -177,8 +244,9 @@
         <a href="#reservierung" data-motion="hero" data-hover-scale class="inline-flex items-center justify-center bg-champagne text-charcoal px-10 min-h-[52px] text-xs uppercase tracking-[0.3em] hover:bg-champagne/90 transition-colors duration-200 font-medium">
           Tisch reservieren
         </a>
-        <div data-motion="hero" class="mt-20 text-bone/70 text-[11px] uppercase tracking-[0.3em]">
-          Mo – Sa · ab 17:30 · Sonntag geschlossen
+        <div data-motion="hero" id="hoursStatus" class="mt-20 text-bone/70 text-[11px] uppercase tracking-[0.3em] flex items-center justify-center gap-2">
+          <span class="status-dot inline-block w-1.5 h-1.5 rounded-full bg-bone/40" aria-hidden="true"></span>
+          <span class="status-text">Mo – Sa · ab 17:30 · Sonntag geschlossen</span>
         </div>
       </div>
 
@@ -474,6 +542,65 @@
     }));
   </script>
 
+  <!-- Live opening status — runs immediately, no JS dependency -->
+  <script>
+    (function updateOpeningStatus() {
+      const statusEl = document.getElementById('hoursStatus');
+      if (!statusEl) return;
+      const dot = statusEl.querySelector('.status-dot');
+      const text = statusEl.querySelector('.status-text');
+
+      const now = new Date();
+      const day = now.getDay(); // 0=So, 1=Mo, ..., 6=Sa
+      const min = now.getHours() * 60 + now.getMinutes();
+      const OPEN = 17 * 60 + 30; // 17:30
+      const CLOSE = 23 * 60;     // 23:00
+      const dayNames = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+
+      let label = '';
+      let isOpen = false;
+
+      if (day === 0) {
+        label = 'Sonntag geschlossen · Öffnet Montag 17:30';
+      } else if (min < OPEN) {
+        const remaining = OPEN - min;
+        if (remaining <= 90) {
+          const h = Math.floor(remaining / 60);
+          const m = remaining % 60;
+          label = h > 0 ? `Öffnet in ${h} Std ${m} Min` : `Öffnet in ${m} Minuten`;
+        } else {
+          label = 'Heute · Öffnet 17:30';
+        }
+      } else if (min < CLOSE) {
+        isOpen = true;
+        label = 'Heute geöffnet · bis 23:00 Uhr';
+      } else {
+        // After close
+        if (day === 6) label = 'Heute geschlossen · Öffnet Montag 17:30';
+        else label = `Heute geschlossen · Öffnet ${dayNames[(day + 1) % 7]} 17:30`;
+      }
+
+      text.textContent = label;
+      if (isOpen) dot.classList.add('is-open');
+    })();
+
+    // Sticky mobile reservation — show after scrolling past hero
+    (function stickyReserveBar() {
+      const bar = document.getElementById('stickyReserve');
+      if (!bar) return;
+      let visible = false;
+      const onScroll = () => {
+        const shouldShow = window.scrollY > 600;
+        if (shouldShow !== visible) {
+          visible = shouldShow;
+          bar.classList.toggle('is-visible', visible);
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+
   <!-- Motion One -->
   <script type="module">
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -488,8 +615,14 @@
       const safetyTimer = setTimeout(revealAll, 1500);
 
       try {
-        const { animate, inView } = await import('https://cdn.jsdelivr.net/npm/motion@12.4.1/+esm');
+        const { animate, inView, scroll } = await import('https://cdn.jsdelivr.net/npm/motion@12.4.1/+esm');
         clearTimeout(safetyTimer);
+
+        // Scroll progress bar (top of page)
+        const progressBar = document.getElementById('scrollProgress');
+        if (progressBar) {
+          scroll(animate(progressBar, { transform: ['scaleX(0)', 'scaleX(1)'] }, { ease: 'linear' }));
+        }
 
         // Hero — runs immediately on load with manual stagger
         const heroEls = document.querySelectorAll('[data-motion="hero"]');
